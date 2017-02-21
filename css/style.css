@@ -1,0 +1,113 @@
+html, body {
+  margin:0;
+  width: 100%;
+  background-color: #000;
+  color: #fff;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 1.4em;
+  letter-spacing: 1px;
+}
+h1 {
+  margin-bottom: 0px;
+  border-bottom: 2px solid currentColor;
+  width: 185px;
+  font-weight: normal;
+  font-size: 1em;
+}
+h2 {
+  margin-bottom: 0px;
+  border-bottom: 2px solid currentColor;
+  width: 182px;
+  font-weight: normal;
+  font-size: 1em;
+}
+p {
+  margin-top: 0px;
+}
+a:link {
+  text-decoration: none;
+}
+a:visited {
+  text-decoration: none;
+}
+ul {
+  margin-top: 0px;
+  padding-left: 27px;
+}
+#welcome {
+  margin: 30px;
+  z-index: 100;
+}
+#help {
+  display: none;
+  position: fixed;
+  left: 20px;
+  bottom: 0px;
+  color: #fff;
+}
+.pad {
+  display: none;
+  min-height: 100%;
+  width: 100%;
+  position: fixed;
+}
+#Clorox {
+  background: url(/mpc/logos/Clorox.png) no-repeat center center fixed; 
+  background-size: 95%;
+  background-color: #547bdd;
+}
+#Tide {
+  background: url(/mpc/logos/Tide.png) no-repeat center center fixed; 
+  background-size: 95%;
+  background-color: #ff5d31;
+}
+#Comet {
+  background: url(/mpc/logos/Comet.png) no-repeat center center fixed;
+  background-size: 95%;
+  background-color: #2ABE6A;
+}
+#Finish {
+  background: url(/mpc/logos/Finish.png) no-repeat center center fixed;
+  background-size: 95%;
+  background-color: #11a2e3;
+}
+#Cascade {
+  background: url(/mpc/logos/Cascade.png) no-repeat center center fixed;
+  background-size: 95%;
+  background-color: #569c54;
+}
+#Wisk {
+  background: url(/mpc/logos/Wisk.png) no-repeat center center fixed;
+  background-size: 95%;
+  background-color: #e61d32;
+}
+#BabyRuth {
+  background: url(/mpc/logos/BabyRuth.png) no-repeat center center fixed;
+  background-size: 95%;
+  background-color: #ffffff;
+}
+#mrGoodbar {
+  background: url(/mpc/logos/mrGoodbar.png) no-repeat center center fixed;
+  background-size: 95%;
+  background-color: #fbf239;
+}
+#Kellogs {
+  background: url(/mpc/logos/Kellogs.png) no-repeat center center fixed;
+  background-size: 95%;
+  background-color: #ffffff;
+}
+#Crunch {
+  background: url(/mpc/logos/Crunch.png) no-repeat center center fixed;
+  background-size: 95%;
+  background-color: #3055a1;
+}
+#Snickers {
+  background: url(/mpc/logos/Snickers.png) no-repeat center center fixed;
+  background-size: 95%;
+  background-color: #432200;
+}
+#Mars {
+  background: url(/mpc/logos/Mars.png) no-repeat center center fixed;
+  background-size: 95%;
+  background-color: #fefbd0;
+}

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Logo Jungle</title>
+	<link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
+	<link rel="icon" href="./favicon.ico" type="image/x-icon">
+	<link href="./css/style.css" rel="stylesheet" type="text/css" />
+	<script src="./inc/shim/Base64.js" type="text/javascript"></script>
+	<script src="./inc/shim/Base64binary.js" type="text/javascript"></script>
+	<script src="./inc/shim/WebAudioAPI.js" type="text/javascript"></script>
+	<script src="./inc/shim/WebMIDIAPI.js" type="text/javascript"></script>
+	<script src="./inc/jasmid/stream.js"></script>
+	<script src="./inc/jasmid/midifile.js"></script>
+	<script src="./inc/jasmid/replayer.js"></script>
+	<script src="./js/midi/audioDetect.js" type="text/javascript"></script>
+	<script src="./js/midi/gm.js" type="text/javascript"></script>
+	<script src="./js/midi/loader.js" type="text/javascript"></script>
+	<script src="./js/midi/plugin.audiotag.js" type="text/javascript"></script>
+	<script src="./js/midi/plugin.webaudio.js" type="text/javascript"></script>
+	<script src="./js/midi/plugin.webmidi.js" type="text/javascript"></script>
+	<script src="./js/midi/player.js" type="text/javascript"></script>
+	<script src="./js/util/dom_request_xhr.js" type="text/javascript"></script>
+	<script src="./js/util/dom_request_script.js" type="text/javascript"></script>
+	<script src="./inc/timer.js" type="text/javascript"></script>
+	<script src="./inc/event.js" type="text/javascript"></script>
+</head>
+<body onkeypress="keyPlay(event)">
+	<div id="welcome">
+	<h1>Logo Jungle</h1>
+	<p>This project was created by Ambroise Bellec in the fall of 2015. In September, Ambroise purchased a second-hand Akai MPC500 and has since experimented with hand-played Jungle (Drum n Bass). Thanks to Ryan Pellette, who coded this piece, we were able to pay homage to a wild 90s era of rave and breakbeats through sampling both the audio and our visuals before translating them to this interface. Use this website as both an instrument and a museum.</p>
+	<h2>Instructions:</h2>
+	<ul>
+	  <li>Hit the spacebar to play/pause the audio in the background.</li>
+	  <li>Use your keyboard to make some banging Jungle! V: Chord, B: Hat, N: Kick, F: Shuffle, G: Snare, H: Snare, T: Bass Drum, Y: Hi-Hat, U: Kick, 5: Crash, 6: Snare, 7: Snare</li>
+	</ul>
+	</div>
+	<a href="#" id="help" onclick="welcomePopup()">?</a>
+	<div class="player"></div>
+		<div class="pad" id="Clorox"></div>
+		<div class="pad" id="Tide"></div>
+		<div class="pad" id="Wisk"></div>
+		<div class="pad" id="Finish"></div>
+        <div class="pad" id="Cascade"></div>
+        <div class="pad" id="Comet"></div>
+        <div class="pad" id="BabyRuth"></div>
+        <div class="pad" id="mrGoodbar"></div>
+        <div class="pad" id="Kellogs"></div>
+        <div class="pad" id="Crunch"></div>
+        <div class="pad" id="Snickers"></div>
+        <div class="pad" id="Mars"></div>
+        <input style="display:none;" onclick="pausePlayStop()" id="pausePlayStop"></input>               
+  <script type="text/javascript">
+	function keyPlay(event){
+		var help = document.getElementById("help");
+		var keyInput = event.which || event.keyCode;
+		var note = {118: 33, 98: 34, 110: 35, 102: 36, 103: 37, 104: 38, 116: 39, 121: 40, 117: 41, 53: 42, 54: 43, 55: 44};
+		MIDI.noteOn(0, note[keyInput], 127, 0);
+		setTimeout(function(){ MIDI.noteOff(0, note[keyInput], 0); }, 300);
+		if (keyInput === 32) {
+			pausePlayStop();
+			if (MIDI.Player.playing) {
+			  document.getElementById("welcome").style.display = 'none';
+			  help.style.display = 'none';
+		    }
+			else {
+	  			setTimeout(function(){ help.style.display = 'block'; }, 2000);
+			}
+		}
+		var noteMap = {118: "Clorox", 98: "Tide", 110: "Wisk", 102: "Finish", 103: "Cascade", 104: "Comet", 116: "BabyRuth", 121: "mrGoodbar", 117: "Kellogs", 53: "Crunch", 54: "Snickers", 55: "Mars"};
+		var notePad = document.getElementById(noteMap[keyInput]);
+		if (keyInput in noteMap){
+	    	notePad.style.display = 'block';
+	    	setTimeout(function(){ notePad.style.display = 'none'; }, 50);
+	    	if (help.style.display === 'block') {
+	    		help.style.display = 'none';
+	    	}
+	    }
+	};
+	var pausePlayStop = function(stop) {
+		var d = document.getElementById("pausePlayStop");
+		if (stop) {
+			MIDI.Player.stop();
+		} else if (MIDI.Player.playing) {
+			MIDI.Player.pause(true);
+		} else {
+			MIDI.Player.resume();
+		}
+	};
+	eventjs.add(window, "load", function(event) {
+		var instrumentName = "synth_drum";
+		MIDI.loader = new sketch.ui.Timer;
+		MIDI.loadPlugin({
+			soundfontUrl: "./soundfont/",
+			instrument: instrumentName,
+			onprogress: function(state, progress) {
+				MIDI.loader.setValue(progress * 100);
+			},
+			onsuccess: function() {
+				player = MIDI.Player;
+				player.timeWarp = 1;
+				player.BPM = 190;
+				player.loadFile(song[songid++ % song.length]);
+				MIDI.programChange(0, MIDI.GM.byName[instrumentName].number);
+				player.addListener(function(data) {
+                    var msg = data.message;
+					var note = data.note;
+					var noteMap = {33: "Clorox", 34: "Tide", 35: "Wisk", 36: "Finish", 37: "Cascade", 38: "Comet", 39: "BabyRuth", 40: "mrGoodbar", 41: "Kellogs", 42: "Crunch", 43: "Snickers", 44: "Mars"};
+                    var notePad = document.getElementById(noteMap[note]);
+                    if(msg === 144) {
+                        if(note){
+                            notePad.style.display = 'block';
+                            setTimeout(function(){ notePad.style.display = 'none'; }, 50);
+                        }
+                    }
+				});
+				MIDIPlayerPercentage(player);
+			}
+		});
+	});
+	var MIDIPlayerPercentage = function(player) {
+		var capsule = document.getElementById("capsule");
+		eventjs.add(capsule, "drag", function(event, self) {
+			eventjs.cancel(event);
+			player.currentTime = (self.x) / 420 * player.endTime;
+			if (player.currentTime < 0) player.currentTime = 0;
+			if (player.currentTime > player.endTime) player.currentTime = player.endTime;
+			if (self.state === "down") {
+				player.pause(true);
+			} else if (self.state === "up") {
+				player.resume();
+			}
+		});
+		player.setAnimation(function(data, element) {
+			var percent = data.now / data.end;
+			var now = data.now >> 0; 
+			var end = data.end >> 0; 
+			if (now === end) { 
+				var id = ++songid % song.length;
+				player.loadFile(song[id], player.start); 
+			}
+		});
+	};
+	  function welcomePopup(){
+	  	var welcomePage = document.getElementById("welcome");
+	  	welcomePage.style.display = 'block';
+	  	var help = document.getElementById("help");
+	  	help.style.display = 'none';
+	  }
+	var player;
+	var songid = 0;
+	var song = [
+		//beat 
+		'data:audio/midi;base64,TVRoZAAAAAYAAAABAGBNVHJrAAAEVwD/Aw9BdXRvIExvb3AgbWlkaQAA/1gEBAIkCAD/WAQEAiQIMJAhfwCQI38wgCFAAIAjQACQJH8wgCRAAJAlfzCQJH8AgCVAMJAjfwCAJEAwgCNAAJAlfzCQIn8AgCVAMIAiQACQJH8wkCN/AIAkQDCQIn8AgCNAMIAiQACQJn8wkCJ/AIAmQDCAIkAAkCR/MJAifwCAJEAwgCJAAJAkfzCAJEAAkCV/MJAhfwCQI38AgCVAMIAhQACAI0AAkCR/MIAkQACQJX8wkCJ/AIAlQDCAIkAAkCN/MIAjQACQJX8wkCJ/AIAlQDCAIkAAkCV/MJAkfwCAJUAwkCJ/AIAkQDCAIkAAkCZ/MJAkfwCAJkAwkCN/AIAkQDCQIn8AgCNAMIAiQACQJH8wgCRAAJAmfxiQJX8AgCZAGJAhfwCQI38AgCVAMIAhQACAI0AAkCR/MIAkQACQJX8wkCR/AIAlQDCQI38AgCRAMIAjQACQJX8wkCJ/AIAlQDCAIkAAkCZ/MJAkfwCAJkAwkCN/AIAkQDCAI0AAkCZ/MJAifwCAJkAwgCJAAJAkfzCQIn8AgCRAMIAiQACQI38wgCNAAJAmfzCQIX8AkCN/AIAmQDCAIUAAkCJ/AIAjQDCAIkAAkCV/MJAifgCAJUAwgCJAAJAjfzCAI0AAkCR+MJAifwCAJEAwgCJAAJAlfzCAJUAAkCl/MJAofwCAKUAwgChAAJArfzCQKX8AgCtAMJAnfwCAKUAwgCdAAJAsfzCQKn8AgCxAMIAqQDCQIX8AkCN/MIAhQACAI0AAkCR/MIAkQACQJX8wkCR/AIAlQDCQI38AgCRAMIAjQACQJX8wkCJ/AIAlQDCAIkAAkCR/MIAkQACQJX8wkCJ/AIAlQDCAIkAAkCR/MIAkQACQJX8wkCR/AIAlQDCQIn8AgCRAMIAiQACQJX8wkCR/AIAlQDCAJEAAkCl/MJAofwCAKUAwgChAAJArfzCQKX8AgCtAMJAnfwCAKUAwgCdAAJAsfzCQKH8AgCxAMIAoQACQKH4wgChAAJApfzCQKH8AgClAMIAoQACQK38wkCl/AIArQDCQJ38AgClAMIAnQACQLH8wkCp/AIAsQDCAKkAwkCF/AJAjfzCAIUAAgCNAAJAkfzCAJEAAkCV/MJAkfwCAJUAwkCN/AIAkQDCAI0AAkCV/MJAifwCAJUAwgCJAAJAkfzCQI38AgCRAMJAifwCAI0AwgCJAAJAkfzCAJEAAkCV/MJAjfwCAJUAwgCNAAJAlfxiAJUAAkCZ/GJAjfwCAJkAwkCJ/AIAjQDCAIkAAkCl/MJAofwCAKUAwgChAAJArfzCQKX8AgCtAMJAnfwCAKUAwgCdAAJAsfzCQKH8AgCxAMIAoQACQKH4wgChAAJArfzCQKH8AgCtAMIAoQACQKH4wgChAAJArfxiAK0AAkCx+GJAnfwCALEAwgCdAAJAsfzCQKn8AgCxAMIAqQAD/LwA='	
+	];
+  </script>
+</body>
+</html>
